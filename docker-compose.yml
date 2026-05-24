@@ -7,6 +7,10 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/ai_microservice
+    depends_on:
+      - db
   
   frontend:
     build:
@@ -19,3 +23,18 @@ services:
       - /app/node_modules
     depends_on:
       - backend
+  
+  db:
+    image: postgres:16
+    container_name: ai-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ai_microservice
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+volumes:
+  postgres_data:
