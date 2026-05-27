@@ -37,5 +37,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: ai-qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+  
 volumes:
   postgres_data:
+  qdrant_data:

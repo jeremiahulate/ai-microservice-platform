@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from models import Message, Document
+from embedding_utils import embed_document, search_documents
 
 Base.metadata.create_all(bind=engine)
 
@@ -24,6 +25,9 @@ app. add_middleware(
 
 class ChatRequest(BaseModel):
     message:str
+
+class SearchRequest(BaseModel):
+    query:str
 
 def get_db():
     db = SessionLocal()
@@ -114,3 +118,30 @@ def get_documents(db: Session = Depends(get_db)):
         }
         for doc in documents
     ]
+
+@app.post("/documents/{document_id}/embed")
+def embed_uploaded_document(document_id: int, db: Session = Depends(get_db)):
+    document = db.query(Document).filter(Document.id == document_id).first()
+
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    with open(document.file_path, "r", encoding="utf-8") as f:
+        text = f.read()
+    
+    chunk_count = embed_document(
+        document_id=document_id,
+        filename=document.filename,
+        text=text
+    )
+
+    return {
+        "message": "Document embedded successfully",
+        "chunks_created": chunk_count
+    }
+
+@app.post("/search")
+def semantic_search(request: SearchRequest):
+    results = search_documents(request.query)
+
+    return results

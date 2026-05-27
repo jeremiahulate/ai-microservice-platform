@@ -5,3 +5,6 @@ pydantic
 sqlalchemy
 psycopg2-binary
 python-multipart
+qdrant-client
+sentence-transformers
+numpy
