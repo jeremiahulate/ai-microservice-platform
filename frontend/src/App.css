@@ -27,3 +27,18 @@ button {
   border: 1px solid #ddd;
   border-radius: 8px;
 }
+
+.upload-section {
+  margin-top: 35px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.upload-section input {
+  margin-right: 10px;
+}
+
+.upload-section ul {
+  margin-top: 10px;
+}

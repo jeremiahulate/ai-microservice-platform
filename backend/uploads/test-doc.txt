@@ -1,0 +1,3 @@
+Docker is used to containerize applications.
+Kubernetes is used to orchestrate containers.
+PostgreSQL stores application data.
