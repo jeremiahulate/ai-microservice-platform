@@ -12,6 +12,8 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/ai_microservice
     depends_on:
       - db
+      - qdrant
+      - ollama
   
   frontend:
     build:
@@ -45,6 +47,15 @@ services:
     volumes:
       - qdrant_data:/qdrant/storage
   
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ai-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+  
 volumes:
   postgres_data:
   qdrant_data:
+  ollama_data:

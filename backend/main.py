@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from models import Message, Document
 from embedding_utils import embed_document, search_documents
+from llm_utils import generate_answer
 
 Base.metadata.create_all(bind=engine)
 
@@ -42,7 +43,13 @@ def health_check():
 
 @app.post("/chat")
 def chat(request: ChatRequest, db: Session = Depends(get_db)):
-    bot_response = f"You said: {request.message}"
+    search_results = search_documents(request.message, limit=3)
+    
+    if search_results:
+        context = "\n\n".join([result["text"] for result in search_results])
+        bot_response = generate_answer(request.message, context)
+    else:
+        bot_response = "I could not find relevant information in your uploaded documents."
 
     message = Message(
         user_message=request.message,
@@ -57,7 +64,8 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)):
         "id": message.id,
         "user_message": message.user_message,
         "bot_response": message.bot_response,
-        "created_at": message.created_at
+        "created_at": message.created_at,
+        "sources": search_results
     }
 
 @app.get("/messages")

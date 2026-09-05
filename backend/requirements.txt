@@ -8,3 +8,4 @@ python-multipart
 qdrant-client
 sentence-transformers
 numpy
+requests
