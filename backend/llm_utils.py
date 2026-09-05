@@ -33,3 +33,4 @@ Answer:
     data = response.json()
 
     return data.get("response", "").strip()
+    
